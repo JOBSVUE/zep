@@ -36,8 +36,7 @@ services:
       nlp:
         condition: service_healthy
     environment:
-      - SERVICE_URL_ZEP_8900
-      - ZEP_SERVER_PORT=8900
+      - SERVICE_URL_ZEP_8000
       - ZEP_STORE_POSTGRES_DSN=postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/postgres?sslmode=disable
       - ZEP_NLP_SERVER_URL=http://nlp:5557
       - ZEP_EXTRACTORS_DOCUMENTS_EMBEDDINGS_SERVICE=${EXTRACTORS_DOCUMENTS_EMBEDDINGS_SERVICE:-openai}
@@ -49,6 +48,8 @@ services:
       - ZEP_OPENAI_API_KEY=${OPENAI_API_KEY}
       - ZEP_AUTH_SECRET=${SERVICE_PASSWORD_AUTHSECRET}
       - ZEP_SERVER_WEB_ENABLED=${ZEP_SERVER_WEB_ENABLED:-false}
+    ports:
+      - "8900:8000"
     volumes:
       - 
         type: bind
@@ -98,7 +99,7 @@ services:
               dsn: "postgres://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/postgres?sslmode=disable"
           server:
             host: 0.0.0.0
-            port: 8900
+            port: 8000
             web_enabled: true
             max_request_size: 5242880
           auth:
@@ -116,7 +117,7 @@ services:
               openai: |
 
     healthcheck:
-      test: "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8900' || exit 1"
+      test: "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8000' || exit 1"
       interval: 5s
       timeout: 10s
       retries: 3
